@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, getCurrentInstance, ref, toRef, useAttrs, useId, type CSSProperties } from 'vue'
+import { computed, getCurrentInstance, ref, toRef, useAttrs, type CSSProperties } from 'vue'
 import type { GlassContainerProps, RefractionMode, Size } from '../types'
 import { useShaderDisplacement } from '../composables/useShaderDisplacement'
 import { isFirefox } from '../utils/browser'
@@ -29,7 +29,8 @@ const emit = defineEmits<{
 }>()
 
 const rootRef = ref<HTMLDivElement | null>(null)
-const filterId = useId()
+const instance = getCurrentInstance()
+const filterId = `glass-filter-${instance ? instance.uid : Math.random().toString(36).slice(2, 9)}`
 
 const modeRef = toRef(props, 'mode')
 const glassSizeRef = toRef(props, 'glassSize') as unknown as import('vue').Ref<Size>
@@ -40,7 +41,6 @@ const { shaderMapUrl } = useShaderDisplacement({
 })
 
 const attrs = useAttrs()
-const instance = getCurrentInstance()
 const isClickable = computed(() => hasClickListener(attrs, instance))
 
 const backdropStyle = computed(() => ({
